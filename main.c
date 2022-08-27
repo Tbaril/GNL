@@ -7,7 +7,9 @@ int	main()
 
 	fd = open("test.txt", O_RDONLY);
 	line = get_next_line(fd);
-	printf("%s\n", line);
+	printf("line is : %s\n", line);
+	line = get_next_line(fd);
+	printf("line is : %s\n", line);
 	close(fd);
 	return(0);
 }

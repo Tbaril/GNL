@@ -5,36 +5,71 @@ int	full_line(char *str)
 	int	i;
 
 	i = 0;
+//	printf("== start full line ==\n\n");
 	while (str[i] && str[i] == '\n')
 		i++;
 	while (str[i])
 	{
+//		printf("searching line\n");
 		if (str[i] == '\n')
+		{
+//			printf("\n== line found ==\n\n");
 			return (i);
+		}
 		i++;
 	}
+//	printf("\n== not found ==\n\n");
 	return (0);
+}
+
+void	erase_buff(char *buff)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (buff[j] && buff[j] == '\n')
+		j++;
+	while (buff[j] && buff[j] != '\n')
+		j++;
+	while (i < BUFF_SIZE)
+	{
+		if (j < BUFF_SIZE)
+			buff[i] = buff[j];
+		else
+			buff[i] = '\0';
+		i++;
+		j++;
+	}
 }
 
 char	*extract_line(char *buff)
 {
 	int	i;
 	int	j;
+	int	len;
 	char	*str;
 
-	i = full_line(buff);
+//	printf("== start of extract line ==\n\n");
+	len = full_line(buff);
 	j = 0;
 	while (buff[j] && buff[j] == '\n')
 		j++;
-	str = (char *)malloc(sizeof(char) * (i - j));
+//	printf("allocation de str i = %i, j = %i\n", i, j);
+	str = (char *)malloc(sizeof(char) * (len - j));
 	i = 0;
-	while (j < i)
+//	printf("printing in str\n");
+	while (buff[j] && buff[j] != '\n')
 	{
+//		printf("i = %i, j = %i\n", i, j);
 		str[i] = buff[j];
 		i++;
 		j++;
 	}
 	str[j] = '\0';
+	erase_buff(buff);
+//	printf("end of extraction\n");
 	return (str);
 }
 
@@ -44,8 +79,9 @@ char *get_next_line(int fd)
 	char		*ret;
 
 	ret = NULL;
-	if (!buff)
+	if (buff[0] == '\0')
 		read(fd, buff, BUFF_SIZE);
+//	printf("%s\n", buff);
 	if (full_line(buff) > 0)
 		ret = extract_line(buff);
 	else	
@@ -57,6 +93,7 @@ char *get_next_line(int fd)
 		}
 		ret = ft_strjoin(ret, buff);
 	}
+//	printf("== end ==\n");
 	return (ret);
 }
 
